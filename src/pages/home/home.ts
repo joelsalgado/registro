@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {AlertController, NavController} from 'ionic-angular';
 import {TodosProvider} from "../../providers/todos/todos";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {ListPage} from "../list/list";
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @Component({
   selector: 'page-home',
@@ -17,18 +19,17 @@ export class HomePage {
   constructor(public navCtrl: NavController,
               public todoService: TodosProvider,
               public alertCtrl: AlertController,
+              private barcodeScanner: BarcodeScanner,
               public fb: FormBuilder,) {
 
-    this.todoService.findUser(3058).then((data) => {
-      this.todo = data;
-      console.log(data);
 
-      this.myForm = this.fb.group({
-        Clave: ['', [Validators.required]],
-      });
+
+    this.myForm = this.fb.group({
+      Clave: ['', [Validators.required]],
     });
-  }
 
+
+  }
   ionViewDidLoad(){
 
     this.todoService.getTodos().then((data) => {
@@ -39,6 +40,18 @@ export class HomePage {
   }
 
   changeView(){
+    this.Clave = this.myForm.value.Clave;
+    console.log(this.Clave);
+    this.navCtrl.setRoot(ListPage, {clave: this.Clave })
+  }
+
+  scan(){
+    this.barcodeScanner.scan().then((barcodeData) => {
+
+        console.log(barcodeData.text);
+      this.navCtrl.setRoot(ListPage, {clave: barcodeData.text })
+    });
+
 
   }
 

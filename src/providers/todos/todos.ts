@@ -71,11 +71,11 @@ export class TodosProvider {
     return new Promise((resolve, reject)=>{
       this.db.find({
         selector: {
-          user_id: userid
+          clave: userid,
+          status: 0
         }
       }).then((res) => {
         resolve(res.docs);
-        console.log(res.docs);
       }).catch((err) => {
         reject(err);
       })
@@ -85,7 +85,9 @@ export class TodosProvider {
 
 
   updateTodo(todo){
-
+    this.db.put(todo).catch((err) => {
+      console.log(err);
+    });
   }
 
   deleteTodo(todo){
@@ -93,7 +95,35 @@ export class TodosProvider {
   }
 
   handleChange(change){
+    let changedDoc = null;
+    let changedIndex = null;
 
+    this.data.forEach((doc, index) => {
+
+      if(doc._id === change.id){
+        changedDoc = doc;
+        changedIndex = index;
+      }
+
+    });
+
+    //A document was deleted
+    if(change.deleted){
+      this.data.splice(changedIndex, 1);
+    }
+    else {
+
+      //A document was updated
+      if(changedDoc){
+        this.data[changedIndex] = change.doc;
+      }
+
+      //A document was added
+      else {
+        this.data.push(change.doc);
+      }
+
+    }
   }
 
 

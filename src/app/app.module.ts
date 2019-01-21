@@ -7,6 +7,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { TodosProvider } from '../providers/todos/todos';
+import {ListPageModule} from "../pages/list/list.module";
+import {BarcodeScanner} from "@ionic-native/barcode-scanner";
 
 @NgModule({
   declarations: [
@@ -15,7 +17,8 @@ import { TodosProvider } from '../providers/todos/todos';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    ListPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -26,6 +29,7 @@ import { TodosProvider } from '../providers/todos/todos';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BarcodeScanner,
     TodosProvider
   ]
 })
